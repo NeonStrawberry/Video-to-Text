@@ -35,12 +35,15 @@ def processFrame(scaled):
   
   line = ''
   for y in range(height):
-    for x in range(width):
+    for x in range(0, width, 2):
       level = min(6, max(0, int(reduced[y, x])))
+      level2 = min(6, max(0, int(reduced[y, x + 1])))
       
       error = reduced[y, x] - levels[level]
+      error2 = reduced[y, x + 1] - levels[level2]
   
       err16 = error / 16
+      err16_2 = error2 / 16
   
       if (x + 1) < width:
         reduced[y    , x + 1] += 7 * err16
@@ -52,7 +55,7 @@ def processFrame(scaled):
         if (x - 1) > 0:
           reduced[y + 1, x - 1] += 3 * err16
       
-      out[y, x] = level
+      out[y, x] = (level) | level2 # Store 2 characters in 1 byte by ORing them
 
   return out
 
